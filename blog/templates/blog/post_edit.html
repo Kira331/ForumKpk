@@ -1,0 +1,36 @@
+{% extends 'header/base.html' %}
+{% load static %}
+{% block content %}
+<div class="white-board1">
+
+    <div class="user-information1">
+        <div>
+            {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" height="100" width="100" class="user-img1">
+            {% else %}
+                 <img src="{% static 'img/ava.jpg' %}" height="50" width="50" class="user-img1">
+            {% endif %}
+        </div>
+        <div class="user-nickname1">{{ user.username }}</div>
+    </div>
+
+    <div class="edit_post">
+        <form method="POST" enctype="multipart/form-data" class="post-form">
+            {% csrf_token %}
+        <div>
+            {{ form.title }}
+        </div>
+        <div>
+            {{ form.text }}
+        </div>
+        
+        <div style="background-color: #607C55; margin-top: 5%;">
+            {{ form.image }}
+        
+            <button type="submit">Зберегти</button>
+        </div>    
+        
+        </form>
+    </div>
+</div>
+{% endblock %}

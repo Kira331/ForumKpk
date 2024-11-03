@@ -1,0 +1,104 @@
+{% extends 'header/base.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="post">
+                <div class="user-post-information">
+                    <div class="user-img-information" > 
+                        {% if post.author.profile.profile_pic %}
+                            <img src="{{ post.author.profile.profile_pic.url }}" height="50" width="50" class="user-img">
+                        {% else %}
+                            <img src="{% static 'img/ava.jpg' %}" height="50" width="50" class="user-img">
+                        {% endif %}
+                    </div>
+                    <div class="user-information">
+                        <a href="{% url 'user_profile' pk=post.author_id %}" style="color: black;">
+                            <div  class="user-nickname">{{ post.author }}</div>
+                        </a>
+                        {% if post.published_date %}
+                            <div class="date"><img src="{% static 'img/Date_today.png' %}" class="post-date-icon">{{ post.published_date }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="attribute">
+                    <hr class="dividing-line">
+                    <img src="{% static 'img/Vector 123.png' %}" class="vector-img">
+                    {% if user.is_authenticated %}
+                        {% if post.author == request.user %}
+                            <a href="{% url 'post_edit' pk=post.pk %}"><<img src="{% static 'img/Subtract_pen.png' %}" class="pen-img"></a>
+                                <a href="" onclick="deletePost({{ post.pk|safe }})">
+                                    <img src="{% static 'img/close_ring_fill.png' %}" class="exit-button">
+                                </a>
+                        {% else %}
+                            <img src="{% static 'img/Subtract_pen.png' %}" class="pen-img">
+                        {% endif %}
+                    {% endif %}                    
+                    <hr class="white-line">
+                </div>
+                <div class="post-content">
+                    <div class="post-title">{{ post.title }}</div>
+                    <div class="post-text">{{ post.text|linebreaksbr }}</div>
+                    {% if post.image %}
+                        <img src="{{post.image.url}}" class="post_img">
+                    {% else %}
+                        <p></p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="comment-section-inscription">Comments</div>
+
+            <div class="comments-list">
+                
+
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="image">
+                         {% if comment.author.profile.profile_pic %}
+                            <img src="{{ comment.author.profile.profile_pic.url }}" height="50" width="50" class="img">
+                        {% else %}
+                             <img src="{% static 'img/ava.jpg' %}" height="50" width="50" class="img">
+                        {% endif %}
+                    </div>
+                    <div class="comment-info">
+                        <div class="info">
+                            <div class="nickname">
+                                <a href="{% url 'user_profile' pk=comment.author_id %}" style="color: black;">
+                                    {{ comment.author }}
+                                </a>
+                            </div>
+                            <div class="comment-date"><img src="{% static 'img/Date_today.png' %}" class="date-icon">{{ comment.created_date }}</div>
+                        </div>
+                        <div class="comment-text">{{ comment.text|linebreaks }}</div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+
+
+            {% if user.is_authenticated %}
+                <form method="POST">
+                <div class="add-comment">
+                    <div class="image">
+                        {% if user.profile.profile_pic %}
+                            <img src="{{ user.profile.profile_pic.url }}" height="100" width="100" class="img">
+                        {% else %}
+      
+                        {% endif %}
+                    </div>
+                    
+                    
+                    <div class="add-comment-tools">
+                          {% csrf_token %}
+                          {{ form }}  
+
+                        <!--  <input class="type-comment" placeholder="Add comment..." type="text">--> 
+                        <button class="submit-button" type="submit"><img src="{% static 'img/Subtract.png' %}" class="submit-button-img"></button>
+                    </div>
+                
+                </div>
+            </form>
+            {% endif %}
+
+            </div>
+{% endblock %}
